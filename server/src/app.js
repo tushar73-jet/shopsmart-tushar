@@ -21,4 +21,7 @@ app.get('/', (req, res) => {
   res.send('ShopSmart Backend Service');
 });
 
+// API Routes
+app.use('/api/users', require('./routes/user.routes'));
+
 module.exports = app;
