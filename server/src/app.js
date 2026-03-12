@@ -23,5 +23,7 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/users', require('./routes/user.routes'));
+app.use('/api/products', require('./routes/product.routes'));
+app.use('/api/orders', require('./routes/order.routes'));
 
 module.exports = app;
