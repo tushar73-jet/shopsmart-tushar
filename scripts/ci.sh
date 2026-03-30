@@ -24,3 +24,4 @@ if [ -d "../client" ]; then
 fi
 
 echo "✅ CI checks completed successfully!"
+ 
