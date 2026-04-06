@@ -2,26 +2,29 @@
 
 # ci.sh - Continuous Integration validation script for ShopSmart
 
-# Exit on error
+# Exit immediately on error
 set -e
 
 echo "🚦 Starting CI checks..."
 
-# Check server
-echo "🖥️  Validating server..."
-cd server
-npm install
-npm test
-npm run lint || echo "⚠️ Lint script failed or not configured (skipping)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# Check client if exists
-if [ -d "../client" ]; then
+# --- Server ---
+echo "🖥️  Validating server..."
+cd "${PROJECT_ROOT}/server"
+npm ci
+npx prisma generate
+npm run lint
+npm test
+
+# --- Client ---
+if [ -d "${PROJECT_ROOT}/client" ]; then
     echo "🎨 Validating client..."
-    cd ../client
-    # Add client-specific tests/lint if they exist
-    # npm install
-    # npm run lint
+    cd "${PROJECT_ROOT}/client"
+    npm ci
+    npm run lint
+    npm run build
 fi
 
 echo "✅ CI checks completed successfully!"
- 
