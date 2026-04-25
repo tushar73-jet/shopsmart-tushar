@@ -17,6 +17,16 @@ jest.mock('../src/prismaClient', () => ({
         update: jest.fn(),
         delete: jest.fn(),
     },
+    order: {
+        create: jest.fn(),
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+    },
+    orderItem: {
+        deleteMany: jest.fn(),
+    },
 }));
 
 const prisma = require('../src/prismaClient');
@@ -170,6 +180,85 @@ describe('Products API', () => {
             const res = await request(app).get('/api/products/999');
 
             expect(res.statusCode).toBe(404);
+        });
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Orders CRUD
+// ---------------------------------------------------------------------------
+describe('Orders API', () => {
+    const mockOrder = { id: 1, userId: 1, total: 99.99, status: 'PENDING', items: [] };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('POST /api/orders', () => {
+        it('should create an order and return 201', async () => {
+            prisma.order.create.mockResolvedValue(mockOrder);
+
+            const res = await request(app)
+                .post('/api/orders')
+                .send({ userId: 1, total: 99.99, items: [] });
+
+            expect(res.statusCode).toBe(201);
+            expect(res.body).toMatchObject(mockOrder);
+        });
+    });
+
+    describe('GET /api/orders', () => {
+        it('should return an array of orders', async () => {
+            prisma.order.findMany.mockResolvedValue([mockOrder]);
+
+            const res = await request(app).get('/api/orders');
+
+            expect(res.statusCode).toBe(200);
+            expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+
+    describe('GET /api/orders/:id', () => {
+        it('should return an order when found', async () => {
+            prisma.order.findUnique.mockResolvedValue(mockOrder);
+
+            const res = await request(app).get('/api/orders/1');
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body).toMatchObject(mockOrder);
+        });
+
+        it('should return 404 when order is not found', async () => {
+            prisma.order.findUnique.mockResolvedValue(null);
+
+            const res = await request(app).get('/api/orders/999');
+
+            expect(res.statusCode).toBe(404);
+        });
+    });
+
+    describe('PUT /api/orders/:id', () => {
+        it('should update and return the order', async () => {
+            const updated = { ...mockOrder, status: 'SHIPPED' };
+            prisma.order.update.mockResolvedValue(updated);
+
+            const res = await request(app)
+                .put('/api/orders/1')
+                .send({ status: 'SHIPPED' });
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.status).toBe('SHIPPED');
+        });
+    });
+
+    describe('DELETE /api/orders/:id', () => {
+        it('should delete order and return 204', async () => {
+            prisma.orderItem.deleteMany.mockResolvedValue({ count: 0 });
+            prisma.order.delete.mockResolvedValue(mockOrder);
+
+            const res = await request(app).delete('/api/orders/1');
+
+            expect(res.statusCode).toBe(204);
         });
     });
 });
