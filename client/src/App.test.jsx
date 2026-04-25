@@ -1,18 +1,19 @@
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { describe, it, expect, vi } from 'vitest';
+import { AppProvider } from './context/AppContext';
+import { describe, it, expect } from 'vitest';
 
 describe('App', () => {
-    it('renders ShopSmart title', () => {
-        // Mock fetch
-        global.fetch = vi.fn(() =>
-            Promise.resolve({
-                json: () => Promise.resolve({ status: 'ok', message: 'Test Msg', timestamp: 'now' })
-            })
+    it('renders the layout and sidebar', () => {
+        render(
+            <BrowserRouter>
+                <AppProvider>
+                    <App />
+                </AppProvider>
+            </BrowserRouter>
         );
-
-        render(<App />);
-        const linkElement = screen.getByText(/ShopSmart/i);
-        expect(linkElement).toBeInTheDocument();
+        const title = screen.getByText('ShopSmart Dashboard');
+        expect(title).toBeInTheDocument();
     });
 });
