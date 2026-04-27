@@ -9,3 +9,7 @@
    - Run `docker-compose up --build` to start both the client and server.
    - The server is exposed on port 5001.
    - The client is exposed on port 80.
+
+## AWS Deployment
+This project leverages Amazon ECR, Amazon ECS (Fargate), and GitHub Actions for fully managed CI/CD automated rollout.
+
