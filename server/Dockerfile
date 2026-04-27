@@ -26,5 +26,6 @@ COPY . .
 EXPOSE 5001
 
 # Start command
-CMD ["sh", "-c", "npx prisma db push && node prisma/seed.js && npm start"]
+CMD ["npm", "start"]
+
 
