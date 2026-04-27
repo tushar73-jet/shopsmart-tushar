@@ -6,7 +6,8 @@ const connectionString = process.env.DATABASE_URL || 'file:./dev.db';
 const dbPath = connectionString.replace('file:', '');
 
 const db = new _Database(dbPath);
-const adapter = new PrismaBetterSqlite3(db, { url: connectionString });
+const adapter = new PrismaBetterSqlite3(db);
+
 const prisma = new PrismaClient({ adapter });
 
 
