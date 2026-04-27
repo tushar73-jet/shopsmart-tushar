@@ -47,8 +47,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build --build-arg VITE_API_URL=http://3.82.194.67:5001 -t $ECR_REGISTRY/$ECR_CLIENT_REPO:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_CLIENT_REPO:latest ./client
+          docker build -t $ECR_REGISTRY/$ECR_CLIENT_REPO:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_CLIENT_REPO:latest ./client
           docker push --all-tags $ECR_REGISTRY/$ECR_CLIENT_REPO
+
 
 
       - name: Download task definition
